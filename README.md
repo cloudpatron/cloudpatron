@@ -4,6 +4,9 @@ Cloud Patron is an open source membership platform that enables fans to support 
 
 ![Screenshot](https://raw.githubusercontent.com/cloudpatron/cloudpatron/master/screenshot1.png)
 
+[Demo](https://frequency.cloudpatron.portal.cloud/)
+
+
 ## Features
 
 * **Post Updates**

@@ -272,7 +272,11 @@ func adminConfigureHandler(w *Web) {
 	}
 
 	// Default post
-	database.AddPost("Welcome to my new Cloud Patron page!", "Please support me by becoming a patron.")
+	post, _ := database.AddPost("Welcome to my new Cloud Patron page!", "Please support me by becoming a patron.")
+	database.UpdatePost(post.ID, func(p *Post) error {
+		p.Unlocked = true
+		return nil
+	})
 
 	// Default levels
 	database.AddLevel("Patron 1", 5)
