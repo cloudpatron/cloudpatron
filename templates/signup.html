@@ -1,0 +1,68 @@
+{{template "header.html" .}}
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui large dividing header">Become a patron of {{$.Info.Name}}</div>
+        <div class="ui hidden divider"></div>
+
+        {{with $error := .Request.FormValue "error"}}
+            <div class="ui large negative message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $error "invalid"}}
+                            Invalid. Please try again.
+                        {{else}}
+                            Error. Please try again.
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        {{$email := $.Request.FormValue "email"}}
+        {{$referrer := $.Request.FormValue "referrer"}}
+        <form class="ui huge form" action="signup" method="POST" novalidate autocomplete="off">
+            <input type="hidden" name="referrer" {{if $referrer}}value="{{$referrer}}"{{else}}value="{{$.Request.Referer}}"{{end}}>
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">First Name</div>
+                    <input name="first_name" type="text" placeholder="First Name" value="" autofocus>
+                </div>
+                <div class="field">
+                    <div class="ui small header">Last Name</div>
+                    <input name="last_name" type="text" placeholder="Last Name" value="">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">Email Address</div>
+                    <div class="ui left icon input">
+                        <i class="mail icon"></i>
+                        <input name="email" type="email" placeholder="Email Address">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui small header">Password</div>
+                    <div class="ui left icon input">
+                        <i class="key icon"></i>
+                        <input name="password" type="password" placeholder="Password" value="">
+                    </div>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field mobile hidden"></div>
+                <div class="field mobile hidden"></div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Become a Patron</button>
+                </div>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+{{template "footer.html" .}}
+

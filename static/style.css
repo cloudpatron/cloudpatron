@@ -1,0 +1,214 @@
+body {
+    padding-bottom: 100px;
+    color: #222;
+    background-color: #f3f4f5;
+}
+
+a {
+    color: #2185d0;
+}
+
+a:hover {
+    color: #2185d0;
+}
+
+.full.height {
+    min-height: 600px;
+}
+
+.center-aligned {
+    text-align: center !important;
+}
+
+.right-aligned {
+    text-align: right !important;
+}
+
+.left-aligned {
+    text-align: left !important;
+}
+
+
+@media only screen and (max-width: 767px) {
+    [class*="mobile hidden"],
+    [class*="tablet only"]:not(.mobile),
+    [class*="computer only"]:not(.mobile),
+    [class*="large monitor only"]:not(.mobile),
+    [class*="widescreen monitor only"]:not(.mobile),
+    [class*="or lower hidden"] {
+        display: none !important;
+    }
+}
+
+.header-brand > i {
+    border-radius: 5px;
+}
+
+a.header-brand, a.header-brand:hover {
+    text-decoration: none !important;
+    display: inline-block;
+    color: #333;
+    font-size: 1.3em;
+    font-weight: bold;
+    letter-spacing: 0.08em;
+    color: #000;
+    margin-top: 10px;
+}
+
+.footer-block {
+    color: #999;
+    padding: 3em;
+}
+
+.footer-link, .footer-link:hover {
+    color: #999 !important;
+    text-decoration: none !important;
+}
+
+.top-menu {
+    padding: 1em;
+    min-height: 5em;
+    background-color: #fff;
+    box-shadow: 0 1px 2px 0 rgba(34,36,38,.15);
+    border-bottom: 1px solid rgba(34, 36, 38, 0.15);
+}
+
+.top-menu > .backlink {
+    font-size: 1.5em;
+}
+
+.masthead {
+    background-color: #fff;
+}
+
+.masthead-banner {
+    margin-bottom: 1em;
+    min-height: 10em;
+    height: 30em;
+    width: 100%;
+    background-color: linear-gradient(to left, #333, #333 50%, #eee 75%, #333 75%);
+    background-image: url(/banner);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
+.masthead-table {
+    height: 27.5em;
+    width: 100%;
+}
+
+.masthead-banner-text {
+    padding-bottom: 2.25em;
+    text-align: center;
+    font-size: 2.6em;
+    line-height: 1.33em;
+    color: #fff;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8), -1px -1px 4px rgba(0, 0, 0, 0.8);
+}
+
+.masthead-thumbnail {
+    width: 150px;
+    height: 150px;
+    margin-top: -100px;
+    margin-left: 25px;
+}
+
+.page-header {
+    display: block;
+    margin: 0.5em 0;
+    font-size: 1.6em;
+    font-weight: bold;
+    line-height: 1.6em;
+    color: #333;
+    overflow-wrap: break-word;
+}
+
+a.page-header, a.page-header:hover {
+    color: #333;
+    text-decoration: none !important;
+}
+
+.page-text {
+    margin-top: 0.5em;
+    font-size: 1.4em;
+    line-height: 1.6em;
+    color: #555;
+    overflow-wrap: break-word;
+}
+
+.header-button {
+    margin-top: 20px !important;
+}
+.close-link {
+    position: absolute;
+    color: #000 !important;
+    text-decoration: none !important;
+    right: 5px;
+    top: 5px;
+}
+
+.ui.divided.selection.list > a.item {
+    text-decoration: none !important;
+}
+
+.ui.twitter.button {
+    color: #fff !important;
+    background-color: #1da1f2 !important;
+}
+
+/* stripe */
+
+#payment-form {
+    background-color: #f9f9f9;
+    padding: 1em;
+}
+
+#card-errors {
+    padding: 1em;
+    color: orangered;
+}
+
+.StripeElement {
+    background-color: white;
+    height: 40px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    box-shadow: 0 1px 3px 0 #e6ebf1;
+    -webkit-transition: box-shadow 150ms ease;
+    transition: box-shadow 150ms ease;
+}
+
+.StripeElement--focus {
+    box-shadow: 0 1px 3px 0 #cfd7df;
+}
+
+.StripeElement--invalid {
+    border-color: #fa755a;
+}
+
+.StripeElement--webkit-autofill {
+    background-color: #fefde5 !important;
+}
+
+.support-box > .page-text {
+    height: 175px;
+    overflow-y: scroll;
+}
+
+.support-box-button {
+    padding: 0.5em;
+    background-color: #f1f1f1;
+}
+
+.text-description {
+    color: #666;
+    font-size: 1.6em;
+    line-height: 1.3em;
+}
+
+.inline-block {
+    display: inline-block !important;
+}
+

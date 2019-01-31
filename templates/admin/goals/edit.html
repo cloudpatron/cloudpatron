@@ -1,0 +1,61 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Edit Goal</div>
+        <div class="ui hidden divider"></div>
+
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin/goals/edit/{{$.Goal.ID}}"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <form class="ui huge form" action="/admin/goals/edit" method="POST">
+            <input type="hidden" name="goal" value="{{$.Goal.ID}}">
+            <div class="field">
+                <div class="ui small header">
+                    # of Patrons
+                </div>
+                <input type="text" name="target" value="{{$.Goal.Target}}" placeholder="# of Patrons">
+            </div>
+            <div class="field">
+                <div class="ui small header">Goal Description</div>
+                <textarea name="description" rows="5" placeholder="Goal Description" autofocus>{{$.Goal.Description}}</textarea>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <a tabindex="-1" href="/admin/goals" class="ui huge fluid button"><i class="angle left icon"></i>Back</a>
+                </div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <form class="ui huge form" action="/admin/goals/delete" method="POST">
+            <input type="hidden" name="goal" value="{{$.Goal.ID}}">
+            <button type="submit" class="ui right floated red button confirm" data-prompt="Delete Goal?">Delete</button>
+        </form>
+        <div class="ui hidden divider"></div>
+    </div>
+</div>
+
+
+{{template "footer.html" .}}

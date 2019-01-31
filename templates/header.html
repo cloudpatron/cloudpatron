@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+        <meta name="referrer" content="origin" />
+        <link rel="shortcut icon" href="/thumbnail?v={{$.Version}}" />
+        <link rel="apple-touch-icon" href="/thumbnail?v={{$.Version}}" />
+
+        <title>
+            {{if $.Info.Name}}
+                {{$.Info.Name}} - 
+            {{end}}
+            Cloud Patron
+        </title>
+
+        <link rel="stylesheet" type="text/css" href="/static/roboto.css?v={{$.Version}}">
+        <link rel="stylesheet" type="text/css" href="/static/semantic/semantic.min.css?v={{$.Version}}">
+        <link rel="stylesheet" type="text/css" href="/static/style.css?v={{$.Version}}">
+
+        <script src="/static/jquery.min.js"></script>
+        <script src="/static/semantic/semantic.min.js"></script>
+    </head>
+    <body>
+        {{if $.Admin}}
+            <div class="top-menu">
+                {{if $.Backlink}}
+                    {{if hasprefix $.Section "admin/"}}
+                        <a class="backlink" href="{{$.Backlink}}"><i class="large orange home icon"></i></a>
+                    {{end}}
+                {{end}}
+                <a href="/" class="brandlink header-brand">CLOUD PATRON</a>
+                {{if hasprefix $.Section "admin/"}}
+                    <a href="/admin" class="ui large right floated orange basic button">Admin</a>
+                {{else}}
+                    <a href="/admin" class="ui large right floated orange button">Admin</a>
+                {{end}}
+            </div>
+
+            {{if hasprefix $.Section "admin/"}}
+                <div class="ui hidden divider"></div>
+                <div class="ui container">
+                    <div class="ui padded segment">
+                        <div class="ui massive secondary pointing orange stackable menu">
+                            <a class="item" href="/">Page</a>
+                            <a class="{{if hasprefix $.Section "admin/index"}}active{{end}} item" href="/admin">Admin</a>
+                            <a class="{{if hasprefix $.Section "admin/patrons"}}active{{end}} item" href="/admin/patrons">Patrons</a>
+                            <a class="{{if hasprefix $.Section "admin/posts"}}active{{end}} item" href="/admin/posts">Posts</a>
+                            <a class="{{if hasprefix $.Section "admin/levels"}}active{{end}} item" href="/admin/levels">Levels</a>
+                            <a class="{{if hasprefix $.Section "admin/goals"}}active{{end}} item" href="/admin/goals">Goals</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui hidden divider"></div>
+            {{end}}
+        {{else if $.Patron.ID}}
+            <div class="top-menu">
+                <a href="/" class="brandlink header-brand">CLOUD PATRON</a>
+                <a href="/patron" class="ui large right floated orange button">My Account</a>
+            </div>
+            {{if hasprefix $.Section "patron/"}}
+                <div class="ui hidden divider"></div>
+                <div class="ui container">
+                    <div class="ui padded segment">
+                        <div class="ui massive secondary pointing orange stackable menu">
+                            <a class="item" href="/">Home</a>
+                            <a class="{{if hasprefix $.Section "patron/index"}}active{{end}} item" href="/patron">My Account</a>
+                            <a class="{{if hasprefix $.Section "patron/support"}}active{{end}} item" href="/patron/support">Support Level</a>
+                            <a class="{{if hasprefix $.Section "patron/payments"}}active{{end}} item" href="/patron/payments">Payments</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="ui hidden divider"></div>
+            {{end}}
+        {{else}}
+            <div class="top-menu">
+                {{if eq $.Section "signin"}}
+                    <a href="/signup" class="ui right floated orange large button">Sign Up</a>
+                {{else if eq $.Section "signup"}}
+                    <a href="/signin" class="ui right floated basic large button">Sign In</a>
+                {{else}}
+                    <a href="/signin" class="ui right floated basic large button">Sign In</a>
+                {{end}}
+                <a href="/" class="brandlink header-brand">CLOUD PATRON</a>
+            </div>
+        {{end}}
+
+        <div class="full height">
+
+<!--content-->

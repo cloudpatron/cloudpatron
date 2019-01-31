@@ -1,0 +1,314 @@
+{{template "header.html" .}}
+
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Dashboard</div>
+        <div class="ui hidden divider"></div>
+
+        <div class="ui three column stackable grid">
+            <div class="center aligned column">
+                <div class="ui large orange statistic">
+                    <div class="value">
+                        {{len $.Patrons}}
+                    </div>
+                    <div class="label">
+                        patrons
+                    </div>
+                </div>
+            </div>
+            <div class="center aligned column">
+                <div class="ui large orange statistic">
+                    <div class="value">
+                        ${{comma $.Amount}}
+                    </div>
+                    <div class="label">
+                        per month
+                    </div>
+                </div>
+            </div>
+            <div class="center aligned column">
+                <div class="ui large orange statistic">
+                    <div class="value">
+                        {{len $.Posts}}
+                    </div>
+                    <div class="label">
+                        posts
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        {{with $error := .Request.FormValue "error"}}
+            <div class="ui large negative message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $error "invalid"}}
+                            Invalid. Please try again.
+                        {{else}}
+                            Error. Please try again.
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        {{if not $.Info.Completed}}
+            <div class="ui huge negative message">
+                <div class="header">
+                    Please add the following information to complete the setup of your page:
+                </div>
+                <ul class="list">
+                    {{if not $.Info.Name}}
+                        <li>Project Name</li>
+                    {{end}}
+                    {{if not $.Info.Description}}
+                        <li>Project Description</li>
+                    {{end}}
+                    {{if not $.Info.Stripe.PublishableKey}}
+                        <li>Stripe Publishable Key</li>
+                    {{end}}
+                    {{if not $.Info.Stripe.SecretKey}}
+                        <li>Stripe Secret Key</li>
+                    {{end}}
+                    {{if not $.Info.Mail.From}}
+                        <li>Mail From Address</li>
+                    {{end}}
+                    {{if not $.Info.Mail.Server}}
+                        <li>Mail Host</li>
+                    {{end}}
+                    {{if not $.Info.Mail.Port}}
+                        <li>Mail Port</li>
+                    {{end}}
+                    {{if not $.Info.Mail.Username}}
+                        <li>Mail Username</li>
+                    {{end}}
+                    {{if not $.Info.Mail.Password}}
+                        <li>Mail Password</li>
+                    {{end}}
+                </ul>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <form class="ui huge form" action="/admin/edit" method="POST" enctype="multipart/form-data">
+            <div class="ui dividing orange header">Project Info</div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Describe your project to visitors of your page.
+            </div>
+            <div class="ui hidden divider"></div>
+            <div class="equal width fields">
+                <div class="{{if not $.Info.Name}}error{{end}} field">
+                    <div class="ui small header">Name</div>
+                    <input name="name" type="text" placeholder="e.g. Cloud Patron" value="{{$.Info.Name}}" maxlength="40">
+                </div>
+                <div class="{{if not $.Info.Description}}error{{end}} field">
+                    <div class="ui small header">Description</div>
+                    <input name="description" type="text" placeholder="e.g. an open source patronage platform" value="{{$.Info.Description}}" maxlength="60">
+                </div>
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="ui dividing orange header">Images</div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Customize your page with a logo and header image.
+            </div>
+            <div class="ui hidden divider"></div>
+
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">Logo Image</div>
+                    <input type="file" name="thumbnail" accept="image/*,.jpg,.jpeg,.png">
+                </div>
+                <div class="field">
+                    <div class="ui small header">Header Image</div>
+                    <input type="file" name="banner" accept="image/*,.jpg,.jpeg,.png">
+                </div>
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="ui dividing orange header">Social Media</div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Add social media links to your page.
+            </div>
+            <div class="ui hidden divider"></div>
+
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">Facebook URL</div>
+                    <input name="facebook_url" type="text" placeholder="e.g. https://facebook.com/example" value="{{$.Info.Social.FacebookURL}}">
+                </div>
+                <div class="field">
+                    <div class="ui small header">Twitter URL</div>
+                    <input name="twitter_url" type="text" placeholder="e.g. https://twitter.com/example" value="{{$.Info.Social.TwitterURL}}">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">YouTube URL</div>
+                    <input name="youtube_url" type="text" placeholder="e.g. https://youtube.com/channel/example" value="{{$.Info.Social.YoutubeURL}}">
+                </div>
+                <div class="field">
+                    <div class="ui small header">Instagram URL</div>
+                    <input name="instagram_url" type="text" placeholder="e.g. https://instagram.com/example" value="{{$.Info.Social.InstagramURL}}">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">GitHub URL</div>
+                    <input name="github_url" type="text" placeholder="e.g. https://github.com/example/example" value="{{$.Info.Social.GithubURL}}">
+                </div>
+                <div class="field mobile hidden">&nbsp;</div>
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="ui dividing orange header">
+                Email Server
+            </div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Add your SMTP information to enable email. Don't have an SMTP server? Use <a target="_blank" href="https://support.google.com/a/answer/176600">Google's SMTP server</a> or an SMTP relay service like <a target="_blank" href="https://mailgun.com/">Mailgun</a> or <a href="https://sendgrid.com/">SendGrid</a>.
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="equal width fields">
+                <div class="{{if not $.Info.Mail.From}}error{{end}} field">
+                    <div class="ui small header">From Address</div>
+                    <input name="mail_from" type="text" value="{{$.Info.Mail.From}}" placeholder="e.g. Help <help@example.com>">
+                </div>
+                <div class="field mobile hidden">&nbsp;</div>
+            </div>
+            <div class="equal width fields">
+                <div class="{{if not $.Info.Mail.Server}}error{{end}} field">
+                    <div class="ui small header">Mail Host</div>
+                    <input name="mail_server" type="text" value="{{$.Info.Mail.Server}}" placeholder="e.g. example.com">
+                </div>
+                <div class="{{if not $.Info.Mail.Port}}error{{end}} field">
+                    <div class="ui small header">Mail Port</div>
+                    <input name="mail_port" type="text" value="{{$.Info.Mail.Port}}" placeholder="e.g. 587">
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="{{if not $.Info.Mail.Username}}error{{end}} field">
+                    <div class="ui small header">Mail Username</div>
+                    <input name="mail_username" type="text" value="{{$.Info.Mail.Username}}" placeholder="">
+                </div>
+                <div class="{{if not $.Info.Mail.Password}}error{{end}} field">
+                    <div class="ui small header">Mail Password</div>
+                    <input name="mail_password" type="text" value="{{$.Info.Mail.Password}}" placeholder="">
+                </div>
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="ui dividing orange header">Stripe Payments API</div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Add your Stripe API information to enable credit card processing. Don't have an account? <a target="_blank" href="https://stripe.com">Sign up on Stripe</a>.
+            </div>
+            <div class="ui hidden divider"></div>
+            <div class="equal width fields">
+                <div class="{{if not $.Info.Stripe.PublishableKey}}error{{end}} field">
+                    <div class="ui small header">Stripe Publishable Key</div>
+                    <input name="stripe_publishable_key" type="text" value="{{$.Info.Stripe.PublishableKey}}" placeholder="e.g. pk_live_Piecu8ohg4gi8sohTi2eeYoo">
+                </div>
+                <div class="{{if not $.Info.Stripe.SecretKey}}error{{end}} field">
+                    <div class="ui small header">Stripe Secret Key</div>
+                    <input name="stripe_secret_key" type="text" value="{{$.Info.Stripe.SecretKey}}" placeholder="e.g. sk_live_sohsoo0quewizaoku9sha7Ei">
+                </div>
+            </div>
+
+            <div class="ui hidden divider"></div>
+            <div class="ui dividing orange header">Domain Name</div>
+            <div class="ui message">
+                <i class="info circle grey icon"></i>Add a domain name and update DNS for your domain.
+                <ol class="list">
+                    <li>e.g. <b>cloudpatron.example.com IN CNAME {{$.HTTPHost}}.</b></li>
+                </ol>
+            </div>
+            <div class="ui hidden divider"></div>
+            <div class="equal width fields">
+                <div class="field">
+                    <div class="ui small header">Domain Name</div>
+                    <input name="domain" type="text" value="{{$.Info.Domain}}" placeholder="e.g. cloudpatron.example.com">
+                </div>
+                <div class="field">
+                    &nbsp;
+                </div>
+            </div>
+
+
+            <div class="equal width fields">
+                <div class="field mobile hidden">&nbsp;</div>
+                <div class="field mobile hidden">&nbsp;</div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Update Email &amp; Password</div>
+        <div class="ui huge message">
+            <i class="info circle grey icon"></i>Change your sign in credentials.
+        </div>
+
+        <form class="ui huge form" action="/admin/password" method="POST" novalidate autocomplete="off">
+            <div class="{{if not $.Info.Email}}error{{end}} field">
+                <div class="ui small header">Email Address</div>
+                <input name="email" type="email" placeholder="Email Address" value="{{$.Info.Email}}">
+            </div>
+            <div class="field">
+                <div class="ui small header">Current Password</div>
+                <input name="current_password" type="password" placeholder="Current Password" value="">
+            </div>
+            <div class="field">
+                <div class="ui small header">New Password</div>
+                <input name="new_password" type="password" placeholder="New Password" value="">
+            </div>
+            <div class="equal width fields">
+                <div class="field mobile hidden">&nbsp;</div>
+                <div class="field mobile hidden">&nbsp;</div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid button">Update Email &amp; Password</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <a href="/signout" class="ui large right floated basic button confirm" data-prompt="Sign out?">Sign Out</a>
+        <div class="ui hidden divider"></div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

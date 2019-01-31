@@ -1,0 +1,165 @@
+{{template "header.html" .}}
+
+<div class="masthead">
+    <div class="masthead-banner">
+        <div class="ui container">
+            <table class="masthead-table">
+                <tbody>
+                    <td valign="bottom" align="center">
+                        <div class="masthead-banner-text">
+                            <b>{{if $.Info.Name}}{{$.Info.Name}}{{else}}Unnamed{{end}}</b> is creating {{if $.Info.Description}}{{$.Info.Description}}{{end}}
+                        </div>
+                    </td>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="ui container">
+        <div class="ui stackable grid">
+            <div class="four wide column">
+                <a href="/"><img class="ui circular bordered image masthead-thumbnail" src="/thumbnail"></a>
+            </div>
+            <div class="eight wide column">
+                <div class="ui large secondary compact pointing orange menu">
+                    <a class="{{if eq $.Section "index"}}active{{end}} item" href="/">Overview</a>
+                    <a class="{{if eq $.Section "posts"}}active{{end}} item" href="/posts">Posts</a>
+                </div>
+            </div>
+            <div class="four wide column">
+                {{if $.Admin}}
+                    <a href="/admin" class="ui huge fluid orange button">Admin</a>
+                {{else if $.Patron.ID}}
+                    <a href="/patron" class="ui huge fluid orange button">My Account</a>
+                {{else}}
+                    <a href="/signup" class="ui huge fluid orange button">Become a Patron</a>
+                {{end}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui stackable grid">
+        <div class="four wide column">
+            <div class="ui segment center-aligned">
+                <div class="ui tiny statistic">
+                    <div class="value">
+                        {{len $.Patrons}}
+                    </div>
+                    <div class="label">
+                        patrons
+                    </div>
+                </div>
+                <br>
+                <div class="ui horizontal list">
+                    {{with $url := $.Info.Social.FacebookURL}}
+                        <a href="{{$url}}" class="item"><i class="ui large grey facebook square icon"></i></a>
+                    {{end}}
+                    {{with $url := $.Info.Social.TwitterURL}}
+                        <a href="{{$url}}" class="item"><i class="ui large grey twitter square icon"></i></a>
+                    {{end}}
+                    {{with $url := $.Info.Social.YoutubeURL}}
+                        <a href="{{$url}}" class="item"><i class="ui large grey youtube square icon"></i></a>
+                    {{end}}
+                    {{with $url := $.Info.Social.InstagramURL}}
+                        <a href="{{$url}}" class="item"><i class="ui large grey instagram icon"></i></a>
+                    {{end}}
+                </div>
+            </div>
+
+            <div class="ui segment">
+                <a href="https://twitter.com/intent/tweet?text=Support {{$.Info.Name}} in creating {{$.Info.Description}} https://{{$.Request.Host}} #CloudPatron" target="_blank" class="ui fluid twitter button"><i class="twitter icon"></i>Tweet</a>
+            </div>
+
+            <div class="ui segment">
+                <div class="ui dividing header">PROJECT GOALS</div>
+                {{$patroncount := len $.Patrons}}
+                {{range $g := $.Goals}}
+                    <div class="ui center aligned header">
+                        {{if $patroncount}}
+                            {{if gt $patroncount $g.Target}}
+                                {{$g.Target}} reached!
+                            {{else}}
+                                {{commaint $patroncount}} of {{comma $g.Target}}
+                            {{end}}
+                        {{else}}
+                            {{commaint $patroncount}} of {{comma $g.Target}}
+                        {{end}}
+                    </div>
+                    {{$g.Description | markdown}}
+                    <div class="ui divider"></div>
+                {{end}}
+            </div>
+        </div>
+        <div class="eight wide column">
+            <div class="ui segment">
+                {{range $p := $.Posts}}
+
+                    {{if or $.Admin $.Patron.IsActive $p.Unlocked}}
+                        <a class="page-header" href="/posts/{{$p.ID}}">{{$p.Title}}</a>
+                        {{if $p.VideoURL}}
+                            <iframe id="player" frameborder="0" allowfullscreen="1" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" title="YouTube video player" width="100%" height="320" src="{{videoembed $p.VideoURL}}"></iframe>
+                            <div class="ui hidden divider"></div>
+                        {{end}}
+                        <div class="ui hidden divider"></div>
+                        <div class="page-text">
+                            {{$p.Body | markdown}}
+                        </div>
+                    {{else}}
+                        <a class="page-header" href="/signup">Unlock this post by becoming a patron</a>
+                        <div class="ui hidden divider"></div>
+                        <div class="page-text center-aligned">
+                            <div class="ui hidden divider"></div>
+                            <i class="huge lock icon"></i>
+                            <div class="ui hidden divider"></div>
+                            Unlock this post by becoming a patron.
+                            <div class="ui hidden divider"></div>
+                            <a href="/signup" class="ui basic button">Become a patron</a>
+                            <div class="ui hidden divider"></div>
+                        </div>
+                    {{end}}
+
+                    <div class="ui hidden divider"></div>
+                    <div class="ui horizontal divided link list">
+                        {{if $p.Pinned}}
+                            <div class="item">Pinned</div>
+                        {{else}}
+                            <div class="item" title="{{tsdate $p.Created.Unix}}">{{time $p.Created}}</div>
+                            <div class="item">{{if $p.Unlocked}}Unlocked{{else}}Locked{{end}}</div>
+                        {{end}}
+                        {{if $.Admin}}
+                            <a class="item" href="/admin/posts/edit/{{$p.ID}}">Edit</a>
+                        {{end}}
+                    </div>
+                    <div class="ui divider"></div>
+
+                {{end}}
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="ui segment">
+                <div class="ui dividing header">SUPPORT LEVELS</div>
+                {{range $l := $.Levels}}
+                    <div class="ui center aligned header">{{$l.Name}}</div>
+                    {{$l.Description | markdown}}
+                    {{if $.Admin}}
+                        <span class="ui large basic fluid label center-aligned"><b>JOIN ${{$l.Amount}}/MO LEVEL</b></span>
+                    {{else if $.Patron.IsActive}}
+                        <a href="/patron/support" class="ui fluid basic button"><b>JOIN ${{$l.Amount}}/MO LEVEL</b></a>
+                    {{else}}
+                        <a href="/signup?level={{$l.ID}}" class="ui fluid basic button"><b>JOIN ${{$l.Amount}}/mo LEVEL</b></a>
+                    {{end}}
+                    <div class="ui divider"></div>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<div class="ui hidden section divider"></div>
+<div class="ui hidden section divider"></div>
+
+{{template "footer.html" .}}

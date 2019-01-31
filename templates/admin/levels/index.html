@@ -1,0 +1,63 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin/levels"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <div class="ui huge orange dividing header">Levels</div>
+        <div class="ui huge message">
+            <i class="info circle grey icon"></i>Customize support levels for your patrons.
+        </div>
+        <div class="ui hidden divider"></div>
+
+        <form class="ui huge form" action="/admin/levels/create" method="POST">
+            <div class="equal width fields">
+                <div class="field">
+                    <input name="name" type="text" placeholder="Level Name">
+                </div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Add Level</button>
+                </div>
+            </div>
+        </form>
+
+        <div class="ui hidden section divider"></div>
+
+        <div class="ui huge middle aligned selection divided list">
+            {{if $.Levels}}
+                {{range $t := $.Levels}}
+                    <a class="item" href="/admin/levels/edit/{{$t.ID}}">
+                        <div class="right floated content">
+                            <div class="ui horizontal divided list">
+                                <div class="item">${{comma $t.Amount}}/mo</div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="header">
+                                {{$t.Name}}
+                            </div>
+                        </div>
+                    </a>
+                {{end}}
+            {{end}}
+        </div>
+
+    </div>
+</div>
+
+{{template "footer.html" .}}
+

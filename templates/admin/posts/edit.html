@@ -1,0 +1,76 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Edit Post</div>
+        <div class="ui hidden divider"></div>
+
+        <a href="/posts/{{$.Post.ID}}" class="ui large right floated orange button">View Post</a>
+        <div class="ui hidden clearing divider"></div>
+
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin/posts/edit/{{$.Post.ID}}"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <form class="ui huge form" action="/admin/posts/edit" method="POST">
+            <input type="hidden" name="post" value="{{$.Post.ID}}">
+            <div class="field">
+                <input name="title" type="text" placeholder="Post Title" value="{{$.Post.Title}}">
+            </div>
+            <div class="field">
+                <textarea name="body" rows="10" placeholder="" autofocus>{{$.Post.Body}}</textarea>
+            </div>
+            <div class="field">
+                <input name="video_url" type="text" placeholder="e.g. https://youtube.com/watch?v=hjk34589s" value="{{$.Post.VideoURL}}">
+            </div>
+            <div class="equal width fields">
+                <div class="field" title="Pins this post to the top of your posts">
+                    <div class="ui checkbox">
+                        <input name="pinned" type="checkbox" value="yes" {{if $.Post.Pinned}}checked{{end}}>
+                        <label>Pinned</label>
+                    </div>
+                </div>
+                <div class="field" title="Unlocking a post makes it available to non-patrons">
+                    <div class="ui checkbox">
+                        <input name="unlocked" type="checkbox" value="yes" {{if $.Post.Unlocked}}checked{{end}}>
+                        <label>Unlocked</label>
+                    </div>
+                </div>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <a tabindex="-1" href="/admin/posts" class="ui huge fluid button"><i class="angle left icon"></i>Back</a>
+                </div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <form class="ui huge form" action="/admin/posts/delete" method="POST">
+            <input type="hidden" name="post" value="{{$.Post.ID}}">
+            <button type="submit" class="ui right floated red button confirm" data-prompt="Delete Post?">Delete</button>
+        </form>
+        <div class="ui hidden divider"></div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

@@ -1,0 +1,127 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Patron</div>
+        <div class="ui hidden divider"></div>
+
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin/patrons/view/{{$.Patron.ID}}"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <div class="ui two column stackable grid">
+            <div class="column">
+                <div class="ui large dividing header">ID</div>
+                <div class="page-text">{{$.Patron.ID}}</div>
+            </div>
+            <div class="column">
+                &nbsp;
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">First Name</div>
+                <div class="page-text">
+                    {{if $.Patron.FirstName}}
+                        {{$.Patron.FirstName}}
+                    {{else}}
+                        &mdash;
+                    {{end}}
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">Last Name</div>
+                <div class="page-text">
+                    {{if $.Patron.LastName}}
+                        {{$.Patron.LastName}}
+                    {{else}}
+                        &mdash;
+                    {{end}}
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">Email</div>
+                <div class="page-text">
+                    <a href="mailto:{{$.Patron.Email}}">{{$.Patron.Email}}</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">Amount</div>
+                <div class="page-text">${{comma $.Patron.Amount}}</div>
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">Stripe</div>
+                <div class="page-text">
+                    <a target="_blank" href="https://dashboard.stripe.com/test/customers/{{$.Patron.Stripe}}">{{$.Patron.ID}}</a>
+                </div>
+            </div>
+            <div class="column">
+                <div class="ui large dividing header">Created</div>
+                <div class="page-text" title="{{$.Patron.Created}}">{{time $.Patron.Created}}</div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge dividing orange header">Payments</div>
+        <div class="ui hidden divider"></div>
+
+        <div class="ui huge middle aligned selection divided list">
+            <div class="item">
+                <div class="right floated content">
+                    <div class="ui horizontal divided list">
+                        {{if $.Patron.Canceled}}
+                            <div class="item">Canceled</div>
+                        {{else}}
+                            <div class="item">${{comma $.Patron.Amount}}/mo</div>
+                            <div class="item">{{nextbillingdate}}</div>
+                        {{end}}
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="header">
+                        Next monthly payment
+                    </div>
+                </div>
+            </div>
+            {{range $p := $.Payments}}
+                <div class="item">
+                    <div class="right floated content">
+                        <div class="ui horizontal divided list">
+                            <div class="item">${{comma $p.Amount}}/mo</div>
+                            <div class="item">{{tsdate $p.Created.Unix}}</div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            Monthly payment
+                            {{if $p.Paid}}
+                                <div class="ui basic orange label">Paid</div>
+                            {{else}}
+                                <div class="ui basic red label">Unpaid</div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            {{end}}
+        </div>
+
+    </div>
+</div>
+
+{{template "footer.html" .}}

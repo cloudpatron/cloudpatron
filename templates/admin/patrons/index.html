@@ -1,0 +1,73 @@
+{{template "header.html" .}}
+
+{{$query := $.Request.FormValue "q"}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Patrons</div>
+        <div class="ui huge message">
+            <i class="info circle grey icon"></i>View and search your patron database.
+        </div>
+        <div class="ui hidden divider"></div>
+
+        {{if not $query}}
+            <a href="/admin/patrons/export" class="ui basic button"><i class="file alternate outline icon"></i>Export Email List</a>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <form class="ui large form" method="GET" action="/admin/patrons">
+            <div class="field">
+                <input type="search" name="q" value="" placeholder="Search">
+            </div>
+        </form>
+
+        <div class="ui hidden divider"></div>
+
+        {{if $query}}
+            <a href="/admin/patrons" class="ui large basic label">{{$query}} <i class="close icon"></i></a>
+        {{end}}
+
+        <div class="ui huge middle aligned selection divided list">
+            {{if len $.Patrons}}
+                {{range $p := $.Patrons}}
+                    <a class="item" href="/admin/patrons/view/{{$p.ID}}">
+                        <div class="right floated content">
+                            <div class="ui horizontal divided list">
+                                {{if $p.Stripe}}
+                                    {{if not $p.Canceled}}
+                                        <div class="item">${{comma $p.Amount}}/mo</div>
+                                    {{else}}
+                                        <div class="item">inactive</div>
+                                    {{end}}
+                                {{else}}
+                                    <div class="item">inactive</div>
+                                {{end}}
+                                <div class="item">{{tsdate $p.Created.Unix}}</div>
+                            </div>
+                        </div>
+                        <div class="content">
+                            <div class="header">
+                                {{$p.Email}}
+                            </div>
+                        </div>
+                    </a>
+                {{end}}
+            {{end}}
+        </div>
+
+        <div class="ui hidden clearing divider"></div>
+
+        {{if not $.LastPage}}
+            <a href="/admin/patrons?p={{add $.Page 1}}&q={{$query}}" class="ui large right floated basic button">Next</a>
+        {{end}}
+
+        {{if gt $.Page 1}}
+            <a href="/admin/patrons?p={{sub $.Page 1}}&q={{$query}}" class="ui large basic button">Previous</a>
+        {{end}}
+
+
+        <div class="ui hidden section divider"></div>
+    </div>
+</div>
+
+{{template "footer.html" .}}

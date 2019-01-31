@@ -1,0 +1,49 @@
+
+        </div>
+
+        <div class="ui hidden section divider"></div>
+
+        <div class="footer-block">
+            <div class="center-aligned">
+                <!--div class="ui divided horizontal list">
+                    <a href="/" class="item footer-link">Home</a>
+                    <a href="mailto:{{$.Info.Email}}" class="item footer-link">Support</a>
+                    <a href="/terms-of-service" class="item footer-link">Terms of Service</a>
+                    <a href="/privacy-policy" class="item footer-link">Privacy Policy</a>
+                </div>
+                <div class="ui hidden clearing divider"></div-->
+                <div class="ui horizontal list">
+                    <div class="item">&copy; 2018 &mdash; All Rights Reserved</div>
+                </div>
+                <div class="ui hidden clearing divider"></div>
+                <div class="ui horizontal list">
+                    <div class="item">Powered by Cloud Patron &mdash; <a href="https://portal.cloud/" target="_blank">Portal Cloud Open Source Hosting
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            $(document).ready(function() {
+                $('.ui.checkbox').checkbox();
+                $('.ui.search.dropdown').dropdown();
+
+                $('.ui.dropdown.item').dropdown({
+                    on: 'hover'
+                });
+
+                $('.confirm').on('click', function() {
+                    return confirm($(this).data('prompt'));
+                });
+
+                {{if $.Request.FormValue "success"}}
+                    window.history.replaceState({}, document.title, window.location.href.split('?')[0]);
+                {{end}}
+                {{if $.Request.FormValue "error"}}
+                    window.history.replaceState({}, document.title, window.location.href.split('?')[0]);
+                {{end}}
+            });
+        </script>
+
+    </body>
+</html>

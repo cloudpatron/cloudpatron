@@ -1,0 +1,211 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+
+        {{with $error := $.Request.FormValue "error"}}
+            <div class="ui large negative message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $error "changes"}}
+                            Saving changes failed
+                        {{else}}
+                            Error
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/patron/payments"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+        {{with $success := $.Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully
+                        {{else}}
+                            Success
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/patron/payments"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <div class="ui huge dividing orange header">Credit Card</div>
+        <div class="ui hidden divider"></div>
+
+        {{if $.Patron.Stripe}}
+            <div class="ui stackable two column grid">
+                <div class="column">
+                    {{range $source := $.StripePaymentSources}}
+                        <div class="ui header">
+                            <i class="credit card icon"></i> {{$source.Card.Brand}} XXXX-{{$source.Card.Last4}} {{$source.Card.ExpMonth}}/{{$source.Card.ExpYear}}
+                        </div>
+                    {{end}}
+                </div>
+                <div class="ui hidden divider"></div>
+            </div>
+        {{end}}
+
+        <div class="ui stackable two column grid">
+            <div class="column">
+                <form action="/patron/addcard" method="POST" id="payment-form">
+                    <div class="form-row">
+                        <div id="card-element">
+                        <!-- A Stripe Element will be inserted here. -->
+                        </div>
+                        <!-- Used to display form errors. -->
+                        <div id="card-errors" role="alert"></div>
+                    </div>
+                    <button type="submit" class="ui large orange fluid button">{{if $.Patron.Stripe}}Update{{else}}Add{{end}} Card</button>
+                </form>
+            </div>
+            <div class="column">
+                <div class="ui hidden divider"></div>
+                <p>
+                    Card will be charged at the beginning of each month.
+                </p>
+                <div>
+                    <i class="big grey cc stripe icon"></i>
+                    <i class="big grey cc visa icon"></i>
+                    <i class="big grey cc mastercard icon"></i>
+                    <i class="big grey cc discover icon"></i>
+                    <i class="big grey cc diners club icon"></i>
+                    <i class="big grey cc jcb icon"></i>
+                    <i class="big grey cc amex icon"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge dividing orange header">Payments</div>
+        <div class="ui hidden divider"></div>
+        <div class="ui huge middle aligned selection divided list">
+            <div class="item">
+                <div class="right floated content">
+                    <div class="ui horizontal divided list">
+                        {{if $.Patron.Canceled}}
+                            <div class="item">Canceled</div>
+                        {{else}}
+                            <div class="item">${{$.Patron.Amount}}/mo</div>
+                            <div class="item">{{nextbillingdate}}</div>
+                        {{end}}
+                    </div>
+                </div>
+                <div class="content">
+                    <div class="header">
+                        Next monthly payment
+                    </div>
+                </div>
+            </div>
+            {{range $p := $.Payments}}
+                <div class="item">
+                    <div class="right floated content">
+                        <div class="ui horizontal divided list">
+                            <div class="item">${{$p.Amount}}/mo</div>
+                            <div class="item">{{tsdate $p.Created.Unix}}</div>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <div class="header">
+                            Monthly payment
+                            {{if $p.Paid}}
+                                <div class="ui basic orange label">Paid</div>
+                            {{else}}
+                                <div class="ui basic red label">Unpaid</div>
+                            {{end}}
+                        </div>
+                    </div>
+                </div>
+            {{end}}
+        </div>
+
+    </div>
+</div>
+
+<script src="https://js.stripe.com/v3/"></script>
+<script>
+    $(document).ready(function() {
+        //
+        // Stripe
+        //
+        function stripeTokenHandler(token) {
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+            form.submit();
+        }
+
+        // Create a Stripe client.
+        var stripe = Stripe('{{$.Info.Stripe.PublishableKey}}');
+
+        // Create an instance of Elements.
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        // (Note that this demo uses a wider set of styles than the guide below.)
+        var style = {
+          base: {
+            color: '#32325d',
+            lineHeight: '16px',
+            fontFamily: 'Roboto, "Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '14px',
+            '::placeholder': {
+              color: '#aab7c4'
+            }
+          },
+          invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+          }
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', {style: style});
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', function(event) {
+          var displayError = document.getElementById('card-errors');
+          if (event.error) {
+            displayError.textContent = event.error.message;
+          } else {
+            displayError.textContent = '';
+          }
+        });
+
+        // Handle form submission.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+
+          stripe.createToken(card).then(function(result) {
+            if (result.error) {
+              // Inform the user if there was an error.
+              var errorElement = document.getElementById('card-errors');
+              errorElement.textContent = result.error.message;
+            } else {
+              // Send the token to your server.
+              stripeTokenHandler(result.token);
+            }
+          });
+        });
+    });
+</script>
+
+
+{{template "footer.html" .}}

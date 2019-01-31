@@ -1,0 +1,63 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Edit Level</div>
+        <div class="ui hidden divider"></div>
+
+        {{with $success := .Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully.
+                        {{else}}
+                            Success!
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/admin/levels/edit/{{$.Level.ID}}"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <form class="ui huge form" action="/admin/levels/edit" method="POST">
+            <input type="hidden" name="level" value="{{$.Level.ID}}">
+            <div class="field">
+                <div class="ui small header">Name</div>
+                <input name="name" type="text" placeholder="Level Name" value="{{$.Level.Name}}">
+            </div>
+            <div class="field">
+                <div class="ui small header">Amount</div>
+                <input type="text" name="amount" value="{{if $.Level.Amount}}{{comma $.Level.Amount}}{{end}}" placeholder="$">
+            </div>
+            <div class="field">
+                <div class="ui small header">Description</div>
+                <textarea name="description" rows="5" placeholder="">{{$.Level.Description}}</textarea>
+            </div>
+            <div class="equal width fields">
+                <div class="field">
+                    <a tabindex="-1" href="/admin/levels" class="ui huge fluid button"><i class="angle left icon"></i>Back</a>
+                </div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <form class="ui huge form" action="/admin/levels/delete" method="POST">
+            <input type="hidden" name="level" value="{{$.Level.ID}}">
+            <button type="submit" class="ui right floated red button confirm" data-prompt="Delete Level?">Delete</button>
+        </form>
+        <div class="ui hidden divider"></div>
+    </div>
+</div>
+
+
+{{template "footer.html" .}}

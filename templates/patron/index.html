@@ -1,0 +1,94 @@
+{{template "header.html" .}}
+
+<div class="ui container">
+    <div class="ui padded segment">
+
+        {{with $error := $.Request.FormValue "error"}}
+            <div class="ui large negative message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $error "changes"}}
+                            Saving changes failed
+                        {{else}}
+                            Error
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/patron"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+        {{with $success := $.Request.FormValue "success"}}
+            <div class="ui large info message">
+                <div class="content">
+                    <div class="header">
+                        {{if eq $success "changes"}}
+                            Changes saved successfully
+                        {{else}}
+                            Success
+                        {{end}}
+                    </div>
+                    <a class="close-link" href="/patron"><i class="close icon"></i></a>
+                </div>
+            </div>
+            <div class="ui hidden divider"></div>
+        {{end}}
+
+        <div class="ui huge dividing orange header">My Account</div>
+        <div class="ui hidden divider"></div>
+        <form class="ui huge form" action="/patron/edit" method="POST">
+            <div class="field">
+                <div class="ui small header">First Name</div>
+                <input name="first_name" type="text" placeholder="First Name" value="{{$.Patron.FirstName}}">
+            </div>
+            <div class="field">
+                <div class="ui small header">Last Name</div>
+                <input name="last_name" type="text" placeholder="Last Name" value="{{$.Patron.LastName}}">
+            </div>
+            <div class="field">
+                <div class="ui small header">Email Address</div>
+                <input name="email" type="email" placeholder="Email Address" value="{{$.Patron.Email}}">
+            </div>
+            <div class="equal width fields">
+                <div class="field mobile hidden"></div>
+                <div class="field mobile hidden"></div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid orange button">Save Changes</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <div class="ui huge orange dividing header">Change Password</div>
+
+        <form class="ui huge form" action="/patron/password" method="POST" novalidate autocomplete="off">
+            <div class="equal width fields">
+                <div class="field">
+                    <input name="current_password" type="password" placeholder="Current Password" value="">
+                </div>
+                <div class="field">
+                    <input name="new_password" type="password" placeholder="New Password" value="">
+                </div>
+                <div class="field">
+                    <button type="submit" class="ui huge fluid basic button">Change Password</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="ui hidden divider"></div>
+
+<div class="ui container">
+    <div class="ui padded segment">
+        <a href="/signout" class="ui large right floated basic button confirm" data-prompt="Sign out?">Sign Out</a>
+        <div class="ui hidden divider"></div>
+    </div>
+</div>
+
+{{template "footer.html" .}}
