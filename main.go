@@ -127,7 +127,7 @@ func init() {
 	cli.BoolVar(&showVersion, "version", false, "display version and exit")
 	cli.BoolVar(&showHelp, "help", false, "display help and exit")
 	cli.BoolVar(&debug, "debug", false, "debug mode")
-	cli.BoolVar(&letsencrypt, "letsencrypt", true, "enable TLS using Let's Encrypt on port 443")
+	cli.BoolVar(&letsencrypt, "letsencrypt", false, "enable TLS using Let's Encrypt on port 443")
 	cli.StringVar(&httpAddr, "http-addr", ":80", "HTTP listen address")
 	cli.StringVar(&httpHost, "http-host", "", "HTTP host (required)")
 }
