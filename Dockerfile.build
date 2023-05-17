@@ -17,10 +17,10 @@ RUN go get -v \
     golang.org/x/time/rate \
 	golang.org/x/crypto/bcrypt \
     go.uber.org/zap \
-	gopkg.in/gomail.v2 \
+	gopkg.in/gomail/v2 \
     github.com/armon/circbuf \
     github.com/microcosm-cc/bluemonday \
-    gopkg.in/russross/blackfriday.v2 \
+    github.com/russross/blackfriday/v2 \
     github.com/stripe/stripe-go
 
 COPY *.go ./

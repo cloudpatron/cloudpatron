@@ -82,26 +82,26 @@ func (m *Mailer) Render(target string, data interface{}) (string, error) {
 			return strings.ToUpper(token[0:3] + " " + token[3:6])
 		},
 	})
-	for _, filename := range AssetNames() {
-		if !strings.HasPrefix(filename, "email/") {
-			continue
-		}
-		name := strings.TrimPrefix(filename, "email/")
-		b, err := Asset(filename)
-		if err != nil {
-			return "", err
-		}
+	// for _, filename := range AssetNames() {
+	// 	if !strings.HasPrefix(filename, "email/") {
+	// 		continue
+	// 	}
+	// 	name := strings.TrimPrefix(filename, "email/")
+	// 	b, err := Asset(filename)
+	// 	if err != nil {
+	// 		return "", err
+	// 	}
 
-		var tmpl *template.Template
-		if name == t.Name() {
-			tmpl = t
-		} else {
-			tmpl = t.New(name)
-		}
-		if _, err := tmpl.Parse(string(b)); err != nil {
-			return "", err
-		}
-	}
+	// 	var tmpl *template.Template
+	// 	if name == t.Name() {
+	// 		tmpl = t
+	// 	} else {
+	// 		tmpl = t.New(name)
+	// 	}
+	// 	if _, err := tmpl.Parse(string(b)); err != nil {
+	// 		return "", err
+	// 	}
+	// }
 	var b bytes.Buffer
 	if err := t.Execute(&b, data); err != nil {
 		return "", err

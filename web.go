@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
@@ -16,7 +15,7 @@ import (
 	httprouter "github.com/julienschmidt/httprouter"
 	bluemonday "github.com/microcosm-cc/bluemonday"
 	stripe "github.com/stripe/stripe-go"
-	blackfriday "gopkg.in/russross/blackfriday.v2"
+	blackfriday "github.com/russross/blackfriday/v2"
 )
 
 var (
@@ -225,28 +224,28 @@ func (w *Web) HTML() {
 		},
 	})
 
-	for _, filename := range AssetNames() {
-		if !strings.HasPrefix(filename, "templates/") {
-			continue
-		}
-		name := strings.TrimPrefix(filename, "templates/")
-		b, err := Asset(filename)
-		if err != nil {
-			Error(w.w, err)
-			return
-		}
+	// for _, filename := range AssetNames() {
+	// 	if !strings.HasPrefix(filename, "templates/") {
+	// 		continue
+	// 	}
+	// 	name := strings.TrimPrefix(filename, "templates/")
+	// 	b, err := Asset(filename)
+	// 	if err != nil {
+	// 		Error(w.w, err)
+	// 		return
+	// 	}
 
-		var tmpl *template.Template
-		if name == t.Name() {
-			tmpl = t
-		} else {
-			tmpl = t.New(name)
-		}
-		if _, err := tmpl.Parse(string(b)); err != nil {
-			Error(w.w, err)
-			return
-		}
-	}
+	// 	var tmpl *template.Template
+	// 	if name == t.Name() {
+	// 		tmpl = t
+	// 	} else {
+	// 		tmpl = t.New(name)
+	// 	}
+	// 	if _, err := tmpl.Parse(string(b)); err != nil {
+	// 		Error(w.w, err)
+	// 		return
+	// 	}
+	// }
 
 	w.w.Header().Set("Content-Type", "text/html")
 	if err := t.Execute(w.w, w); err != nil {
@@ -326,16 +325,16 @@ func Error(w http.ResponseWriter, err error) {
 }
 
 func staticHandler(w http.ResponseWriter, r *http.Request, ps httprouter.Params) {
-	path := "static" + ps.ByName("path")
-	b, err := Asset(path)
-	if err != nil {
-		http.NotFound(w, r)
-		return
-	}
-	fi, err := AssetInfo(path)
-	if err != nil {
-		Error(w, err)
-		return
-	}
-	http.ServeContent(w, r, path, fi.ModTime(), bytes.NewReader(b))
+	// path := "static" + ps.ByName("path")
+	// b, err := Asset(path)
+	// if err != nil {
+	// 	http.NotFound(w, r)
+	// 	return
+	// }
+	// fi, err := AssetInfo(path)
+	// if err != nil {
+	// 	Error(w, err)
+	// 	return
+	// }
+	// http.ServeContent(w, r, path, fi.ModTime(), bytes.NewReader(b))
 }
